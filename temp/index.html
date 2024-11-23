@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GROOT Web</title>
+    <script src="include/roslib.min.js"></script>
+    <script src="include/eventemitter2.min.js"></script>
+    <script src="joystick_ros_control.js"></script>
+    <style>
+      /* CSS to add spacing */
+      canvas {
+        margin-top: 20px; /* Add margin to the top of the canvas */
+        border: 1px solid black; /* Optional: To visually distinguish the canvas */
+      }
+
+      h1 {
+        margin-bottom: 10px; /* Add margin to the bottom of the header */
+      }
+    </style>
+  </head>
+  <body>
+    <h1>GROOT Web</h1>
+
+    <canvas id="turtleCanvas" width="500" height="500"></canvas>
+
+    <div>
+      <button onclick="moveTurtle(2, 0)">Move Up</button><br />
+      <button onclick="moveTurtle(0, 2)">Move Right</button>
+      <button onclick="moveTurtle(0, -2)">Move Left</button><br />
+      <button onclick="moveTurtle(-2, 0)">Move Down</button>
+      <button onclick="stopTurtle()">Stop</button>
+    </div>
+
+    <h2>Available Turtle Topics</h2>
+    <ul id="topicList"></ul>
+
+    <!-- Button to update the list of topics -->
+    <button onclick="getTurtleTopics()">Update Topic List</button>
+  </body>
+</html>
