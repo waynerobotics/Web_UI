@@ -6,42 +6,62 @@ import TurtleTopics from "./TurtleTopics";
 function App() {
   return (
     <Container>
-      <Box 
-        sx={{
+      {/* Page Title */}
+      <Typography 
+        variant="h3" 
+        sx={{ 
           textAlign: "center", 
-          marginTop: 4, 
-          display: "flex", 
-          flexDirection: "column", 
-          alignItems: "center"
+          marginTop: 10,  // You can keep this or adjust as needed
+          fontSize: { xs: "2rem", sm: "3rem", md: "4rem" } 
         }}
       >
-        <Typography variant="h3" sx={{ fontSize: { xs: '2rem', sm: '3rem', md: '4rem' } }}>
-          Groot Web
-        </Typography>
+        Groot Web
+      </Typography>
 
-       
+      {/* Main Layout */}
+      <Box 
+        sx={{
+          marginTop: 4,  // Reduced marginTop to bring the components closer to the title
+          display: "flex", 
+          flexDirection: { xs: "column", sm: "row" }, 
+          alignItems: "stretch", 
+          gap: 2, 
+          minHeight: "calc(100vh - 100px)", 
+        }}
+      >
+        {/* Left Side: Controls and Topics */}
         <Box
-          component="canvas"
-          id="turtleCanvas"
           sx={{
-            border: "1px solid black",
-            width: { xs: '100%', sm: '500px' },
-            height: { xs: '300px', sm: '400px', md: '500px' },
-            marginTop: 2,
-          }}
-        ></Box>
-
-        <Box 
-          sx={{
-            marginTop: 4,
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
-            width: '100%'
+            alignItems: "center", 
+            justifyContent: "center", 
+            gap: 2, 
+            width: { xs: "100%", sm: "30%" },
           }}
         >
           <TurtleControls />
           <TurtleTopics />
+        </Box>
+
+        {/* Right Side: Canvas */}
+        <Box
+          sx={{
+            flexGrow: 1, 
+            display: "flex",
+            justifyContent: "center", 
+            alignItems: "center", 
+          }}
+        >
+          <Box
+            component="canvas"
+            id="turtleCanvas"
+            sx={{
+              border: "1px solid black",
+              width: { xs: "100%", sm: "500px" },
+              height: { xs: "300px", sm: "400px", md: "500px" },
+            }}
+          ></Box>
         </Box>
       </Box>
     </Container>
