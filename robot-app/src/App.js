@@ -6,62 +6,71 @@ import TurtleTopics from "./TurtleTopics";
 function App() {
   return (
     <Container>
-      {/* Page Title */}
-      <Typography 
-        variant="h3" 
-        sx={{ 
-          textAlign: "center", 
-          marginTop: 10,  // You can keep this or adjust as needed
-          fontSize: { xs: "2rem", sm: "3rem", md: "4rem" } 
-        }}
-      >
-        Groot Web
-      </Typography>
-
-      {/* Main Layout */}
       <Box 
         sx={{
-          marginTop: 4,  // Reduced marginTop to bring the components closer to the title
+          textAlign: "center", 
+          marginTop: 2, 
           display: "flex", 
-          flexDirection: { xs: "column", sm: "row" }, 
-          alignItems: "stretch", 
-          gap: 2, 
-          minHeight: "calc(100vh - 100px)", 
+          flexDirection: "column", 
+          alignItems: "center"
         }}
       >
-        {/* Left Side: Controls and Topics */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center", 
-            justifyContent: "center", 
-            gap: 2, 
-            width: { xs: "100%", sm: "30%" },
-          }}
-        >
-          <TurtleControls />
-          <TurtleTopics />
-        </Box>
+        <Typography variant="h3" sx={{ fontSize: { xs: '2rem', sm: '3rem', md: '4rem' } }}>
+          Groot Web
+        </Typography>
 
-        {/* Right Side: Canvas */}
+        {/* Flexbox Container for Canvas and Controls */}
         <Box
           sx={{
-            flexGrow: 1, 
-            display: "flex",
-            justifyContent: "center", 
+            marginTop: 5, 
+
+            display: "flex", 
+            flexDirection: { xs: "column", sm: "row" }, // Stack on smaller screens, row on larger screens
             alignItems: "center", 
+            justifyContent: "center",
+            width: '100%',
           }}
         >
+          {/* Canvas Box */}
           <Box
             component="canvas"
             id="turtleCanvas"
             sx={{
+              display: "flex",
               border: "1px solid black",
-              width: { xs: "100%", sm: "500px" },
-              height: { xs: "300px", sm: "400px", md: "500px" },
+              width: { xs: '100%', sm: '400px', md: "500px" }, 
+              height: { xs: '300px', sm: '400px', md: '500px' },
+              marginBottom: { xs: 2, sm: 0 }, // Add margin on small screens to separate from controls
             }}
           ></Box>
+
+          {/* TurtleControls to the right of the canvas */}
+          <Box
+            sx={{
+              display: "flex",
+              marginTop: 5, 
+              flexDirection: "column",
+              alignItems: "center",
+              marginLeft: { sm: 4 }, // Space between canvas and controls on larger screens
+              width: "auto",
+            }}
+          >
+            <TurtleControls />
+          </Box>
+        </Box>
+
+        {/* TurtleTopics below the canvas and controls */}
+        <Box 
+          sx={{
+            marginTop: 5, 
+
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: '100%', // Full width to make sure they align centrally
+          }}
+        >
+          <TurtleTopics />
         </Box>
       </Box>
     </Container>

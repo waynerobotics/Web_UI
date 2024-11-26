@@ -29,28 +29,55 @@ function TurtleControls() {
   });
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+    <Box 
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 2,
+        justifyContent: "center",
+       
+      }}
+    >
       <div
         onMouseDown={() => {
           handleButtonPress("up");
           moveTurtle(0, 2);
         }}
         onMouseUp={handleButtonRelease}
-        onMouseLeave={handleButtonRelease} 
+        onMouseLeave={handleButtonRelease}
+        onTouchStart={() => {
+          handleButtonPress("up");
+          moveTurtle(0, 2);
+        }}
+        onTouchEnd={handleButtonRelease}
+        onTouchCancel={handleButtonRelease}
         style={buttonStyles("up")}
         aria-label="Move Up"
       >
         <FontAwesomeIcon icon={faCircleUp} style={{ color: "#0ebe11", fontSize: "48px" }} />
       </div>
 
-      <Box sx={{ display: "flex", gap: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+         
+        }}
+      >
         <div
           onMouseDown={() => {
             handleButtonPress("left");
             moveTurtle(-2, 0);
           }}
           onMouseUp={handleButtonRelease}
-          onMouseLeave={handleButtonRelease} 
+          onMouseLeave={handleButtonRelease}
+          onTouchStart={() => {
+            handleButtonPress("left");
+            moveTurtle(-2, 0);
+          }}
+          onTouchEnd={handleButtonRelease}
+          onTouchCancel={handleButtonRelease}
           style={buttonStyles("left")}
           aria-label="Move Left"
         >
@@ -64,6 +91,12 @@ function TurtleControls() {
           }}
           onMouseUp={handleButtonRelease}
           onMouseLeave={handleButtonRelease}
+          onTouchStart={() => {
+            handleButtonPress("stop");
+            stopTurtle();
+          }}
+          onTouchEnd={handleButtonRelease}
+          onTouchCancel={handleButtonRelease}
           style={buttonStyles("stop")}
           aria-label="Stop"
         >
@@ -76,7 +109,13 @@ function TurtleControls() {
             moveTurtle(2, 0);
           }}
           onMouseUp={handleButtonRelease}
-          onMouseLeave={handleButtonRelease} 
+          onMouseLeave={handleButtonRelease}
+          onTouchStart={() => {
+            handleButtonPress("right");
+            moveTurtle(2, 0);
+          }}
+          onTouchEnd={handleButtonRelease}
+          onTouchCancel={handleButtonRelease}
           style={buttonStyles("right")}
           aria-label="Move Right"
         >
@@ -90,7 +129,13 @@ function TurtleControls() {
           moveTurtle(0, -2);
         }}
         onMouseUp={handleButtonRelease}
-        onMouseLeave={handleButtonRelease} 
+        onMouseLeave={handleButtonRelease}
+        onTouchStart={() => {
+          handleButtonPress("down");
+          moveTurtle(0, -2);
+        }}
+        onTouchEnd={handleButtonRelease}
+        onTouchCancel={handleButtonRelease}
         style={buttonStyles("down")}
         aria-label="Move Down"
       >
