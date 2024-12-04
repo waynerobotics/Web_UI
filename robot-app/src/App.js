@@ -2,30 +2,32 @@ import React from "react";
 import { Container, Typography, Box } from "@mui/material";
 import TurtleControls from "./TurtleControls";
 import TurtleTopics from "./TurtleTopics";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
     <Container>
+      <Navbar />
+
+      {/* Main Content */}
       <Box 
         sx={{
           textAlign: "center", 
-          marginTop: 2, 
+          marginTop: 0,  // Adjust spacing to align with navbar
           display: "flex", 
           flexDirection: "column", 
-          alignItems: "center"
+          alignItems: "center",
+          padding: 2,
+          minHeight: '100vh', // Ensure content stretches full height
         }}
       >
-        <Typography variant="h3" sx={{ fontSize: { xs: '2rem', sm: '3rem', md: '4rem' } }}>
-          Groot Web
-        </Typography>
-
+      
         {/* Flexbox Container for Canvas and Controls */}
         <Box
           sx={{
-            marginTop: 5, 
-
+            marginTop: 2, 
             display: "flex", 
-            flexDirection: { xs: "column", sm: "row" }, // Stack on smaller screens, row on larger screens
+            flexDirection: { xs: "column", sm: "row" }, 
             alignItems: "center", 
             justifyContent: "center",
             width: '100%',
@@ -36,8 +38,8 @@ function App() {
             component="canvas"
             id="turtleCanvas"
             sx={{
-              display: "flex",
-              border: "1px solid black",
+              border: "1px solid", 
+              borderColor: 'divider', // Match the border color from the navbar
               width: { xs: '100%', sm: '400px', md: "500px" }, 
               height: { xs: '300px', sm: '400px', md: '500px' },
               marginBottom: { xs: 2, sm: 0 }, // Add margin on small screens to separate from controls
@@ -48,10 +50,10 @@ function App() {
           <Box
             sx={{
               display: "flex",
-              marginTop: 5, 
               flexDirection: "column",
               alignItems: "center",
-              marginLeft: { sm: 4 }, // Space between canvas and controls on larger screens
+              marginTop: { xs: 4, sm: 0 }, // Adjust space on small screens
+              marginLeft: { sm: 4 },
               width: "auto",
             }}
           >
@@ -62,12 +64,11 @@ function App() {
         {/* TurtleTopics below the canvas and controls */}
         <Box 
           sx={{
-            marginTop: 5, 
-
+            marginTop: 5,
+            width: '100%', 
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            width: '100%', // Full width to make sure they align centrally
           }}
         >
           <TurtleTopics />
