@@ -6,8 +6,10 @@ import Navbar from "./components/Navbar";
 
 function App() {
   return (
+    <>
+    <Navbar />
     <Container>
-      <Navbar />
+      
 
       {/* Main Content */}
       <Box 
@@ -75,6 +77,7 @@ function App() {
         </Box>
       </Box>
     </Container>
+    </>
   );
 }
 

@@ -34,7 +34,7 @@ function Navbar() {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: darkGreen }}>
+    <AppBar position="static" sx={{ backgroundColor: darkGreen}}>
       <Container>
         <Toolbar disableGutters sx={{ minHeight: 80 }}>
           {/* Logo Image */}
