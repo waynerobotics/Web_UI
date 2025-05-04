@@ -40,7 +40,10 @@ export default function WaypointPanel() {
 
       <Stack spacing={1}>
         <Typography variant="body2">
-          Coordinates: <strong>({waypoint.x}, {waypoint.y})</strong>
+          Coordinates:{" "}
+          <strong>
+            ({waypoint.x}, {waypoint.y})
+          </strong>
         </Typography>
         <Typography variant="body2">
           Distance: <strong>{distance} m</strong>
@@ -48,14 +51,18 @@ export default function WaypointPanel() {
         <Typography variant="body2">
           ETA: <strong>{eta} sec</strong>
         </Typography>
-        <Typography variant="body2">
+        <Box
+          sx={{ display: "flex", alignItems: "center", fontSize: "0.875rem" }}
+        >
           Status:{" "}
-          <Chip
-            label={status}
-            color={status === "Reached" ? "success" : "primary"}
-            size="small"
-          />
-        </Typography>
+          <Box component="span" sx={{ ml: 0.5 }}>
+            <Chip
+              label={status}
+              color={status === "Reached" ? "success" : "primary"}
+              size="small"
+            />
+          </Box>
+        </Box>
       </Stack>
     </Box>
   );

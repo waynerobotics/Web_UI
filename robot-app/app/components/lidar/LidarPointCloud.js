@@ -1,14 +1,13 @@
 "use client";
 
 import ROSLIB from "roslib";
-import ros     from "@/lib/ros";
+import ros from "@/lib/ros";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Box } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 
 // … helpers (createEmptyPointCloud, parsePointCloud2, updateGeometry) …
-
 
 export default function LidarPointCloud() {
   const mountRef = useRef(null);
@@ -42,9 +41,9 @@ export default function LidarPointCloud() {
     // ——— subscribe to ROS2 PointCloud2 ———
     const listener = new ROSLIB.Topic({
       ros,
-      name: "/unilidar/cloud",             // ← your live topic
+      name: "/unilidar/cloud", // ← your live topic
       messageType: "sensor_msgs/PointCloud2",
-      throttle_rate: 30
+      throttle_rate: 30,
     });
 
     listener.subscribe((msg) => {
@@ -74,7 +73,15 @@ export default function LidarPointCloud() {
     return () => {
       listener.unsubscribe();
       window.removeEventListener("resize", onResize);
-      mountRef.current.removeChild(renderer.domElement);
+
+      // Add null check to prevent error when component unmounts
+      if (
+        mountRef.current &&
+        renderer.domElement.parentNode === mountRef.current
+      ) {
+        mountRef.current.removeChild(renderer.domElement);
+      }
+
       renderer.dispose();
     };
   }, []);
@@ -91,7 +98,7 @@ function createEmptyPointCloud() {
 
   const mat = new THREE.PointsMaterial({
     size: 0.05,
-    color: 0xffffff
+    color: 0xffffff,
   });
 
   return new THREE.Points(geom, mat);

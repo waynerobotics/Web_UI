@@ -6,10 +6,17 @@ import BatteryFullIcon from "@mui/icons-material/BatteryFull";
 import Battery60Icon from "@mui/icons-material/Battery60";
 import Battery20Icon from "@mui/icons-material/Battery20";
 import BatteryAlertIcon from "@mui/icons-material/BatteryAlert";
+import { useState, useEffect } from "react";
 
 export default function BatteryGauge() {
-  // Simulated battery value (you can replace this with ROS data later)
-  const batteryLevel = Math.floor(Math.random() * 100);
+  // Use state with a default value of 0, then update it client-side only
+  const [batteryLevel, setBatteryLevel] = useState(0);
+
+  // Update battery level on client-side only to avoid hydration mismatch
+  useEffect(() => {
+    // Simulate a stable battery value (could be replaced with actual ROS data)
+    setBatteryLevel(62); // Using a fixed value to match what was seen in the error
+  }, []);
 
   // Pick icon based on battery level
   const getBatteryIcon = () => {
