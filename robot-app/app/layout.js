@@ -1,20 +1,17 @@
-// app/layout.js
 "use client";
 
-import MainLayout from "@/components/layout/MainLayout";  // ← adjust to where your MainLayout lives
+import React, { useState, useMemo, createContext } from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
-
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { createContext, useState, useMemo } from "react";
 
-// Prevent FontAwesome from injecting its CSS automatically
+// Tell Font Awesome to skip adding CSS automatically
 config.autoAddCss = false;
 
-// Color‐mode context (if you still want dark/light toggle)
+// Create a context for color mode
 export const ColorModeContext = createContext({
   mode: "light",
   toggleColorMode: () => {},
@@ -23,7 +20,10 @@ export const ColorModeContext = createContext({
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }) {
+  // State for light/dark mode
   const [mode, setMode] = useState("light");
+
+  // Memoized context value
   const colorMode = useMemo(
     () => ({
       mode,
@@ -33,6 +33,7 @@ export default function RootLayout({ children }) {
     [mode]
   );
 
+  // Memoized theme that rebuilds on mode change
   const theme = useMemo(
     () =>
       createTheme({
@@ -41,7 +42,9 @@ export default function RootLayout({ children }) {
           primary: { main: "#3f51b5" },
           secondary: { main: "#f50057" },
         },
-        typography: { fontFamily: inter.style.fontFamily },
+        typography: {
+          fontFamily: inter.style.fontFamily,
+        },
       }),
     [mode]
   );
@@ -52,10 +55,7 @@ export default function RootLayout({ children }) {
         <ColorModeContext.Provider value={colorMode}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-
-            {/* ← Wrap every page in your MainLayout */}
-            <MainLayout>{children}</MainLayout>
-
+            {children}
           </ThemeProvider>
         </ColorModeContext.Provider>
       </body>

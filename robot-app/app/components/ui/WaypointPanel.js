@@ -55,12 +55,13 @@ export default function WaypointPanel() {
           sx={{ display: "flex", alignItems: "center", fontSize: "0.875rem" }}
         >
           Status:{" "}
-          <Chip
-            component="span"                         // ← render as inline span
-            label={status}
-            color={status === "Reached" ? "success" : "primary"}
-            size="small"
-          />
+          <Box component="span" sx={{ ml: 0.5 }}>
+            <Chip
+              label={status}
+              color={status === "Reached" ? "success" : "primary"}
+              size="small"
+            />
+          </Box>
         </Box>
       </Stack>
     </Box>

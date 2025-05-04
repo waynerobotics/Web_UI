@@ -1,22 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Box, Typography, LinearProgress } from "@mui/material";
+import BatteryChargingFullIcon from "@mui/icons-material/BatteryChargingFull";
 import BatteryFullIcon from "@mui/icons-material/BatteryFull";
 import Battery60Icon from "@mui/icons-material/Battery60";
 import Battery20Icon from "@mui/icons-material/Battery20";
 import BatteryAlertIcon from "@mui/icons-material/BatteryAlert";
+import { useState, useEffect } from "react";
 
 export default function BatteryGauge() {
-  // start at 0 on both server & client
+  // Use state with a default value of 0, then update it client-side only
   const [batteryLevel, setBatteryLevel] = useState(0);
 
-  // once we mount, pick a "random" value
+  // Update battery level on client-side only to avoid hydration mismatch
   useEffect(() => {
-    const level = Math.floor(Math.random() * 100);
-    setBatteryLevel(level);
+    // Simulate a stable battery value (could be replaced with actual ROS data)
+    setBatteryLevel(62); // Using a fixed value to match what was seen in the error
   }, []);
 
+  // Pick icon based on battery level
   const getBatteryIcon = () => {
     if (batteryLevel > 80) return <BatteryFullIcon color="success" />;
     if (batteryLevel > 50) return <Battery60Icon color="primary" />;
@@ -40,11 +42,9 @@ export default function BatteryGauge() {
           Battery Level
         </Typography>
       </Box>
-
       <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
         {batteryLevel}%
       </Typography>
-
       <LinearProgress
         variant="determinate"
         value={batteryLevel}
