@@ -1,163 +1,139 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import ROSLIB from "roslib";
+import ros     from "@/lib/ros";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Box } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+
+// … helpers (createEmptyPointCloud, parsePointCloud2, updateGeometry) …
+
 
 export default function LidarPointCloud() {
   const mountRef = useRef(null);
-  const [pointCloud, setPointCloud] = useState(null);
+  const [pcObject, setPcObject] = useState(null);
 
   useEffect(() => {
-    // Create a new scene
+    // ——— Three.js setup ———
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x000000);
 
-    // Set up camera
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      mountRef.current.clientWidth / mountRef.current.clientHeight,
-      0.1,
-      1000
-    );
-    camera.position.z = 5;
-    camera.position.y = 2;
-    camera.lookAt(0, 0, 0);
+    const width = mountRef.current.clientWidth;
+    const height = mountRef.current.clientHeight;
+    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+    camera.position.set(0, 2, 5);
 
-    // Set up renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(
-      mountRef.current.clientWidth,
-      mountRef.current.clientHeight
-    );
+    renderer.setSize(width, height);
     mountRef.current.appendChild(renderer.domElement);
 
-    // Add orbit controls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.25;
 
-    // Grid helper
-    const gridHelper = new THREE.GridHelper(10, 10, 0x888888, 0x444444);
-    scene.add(gridHelper);
+    scene.add(new THREE.GridHelper(10, 10, 0x444444, 0x888888));
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
 
-    // Create point cloud
-    const pointCloudObj = createPointCloud();
-    scene.add(pointCloudObj);
-    setPointCloud(pointCloudObj);
+    // ——— empty point cloud placeholder ———
+    const pointCloud = createEmptyPointCloud();
+    scene.add(pointCloud);
+    setPcObject(pointCloud);
 
-    // Add lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
+    // ——— subscribe to ROS2 PointCloud2 ———
+    const listener = new ROSLIB.Topic({
+      ros,
+      name: "/unilidar/cloud",             // ← your live topic
+      messageType: "sensor_msgs/PointCloud2",
+      throttle_rate: 30
+    });
 
-    // Animation/render loop
+    listener.subscribe((msg) => {
+      const pts = parsePointCloud2(msg);
+      updateGeometry(pointCloud, pts);
+    });
+
+    // ——— animation loop ———
     const animate = () => {
       requestAnimationFrame(animate);
       controls.update();
-
-      // Update point cloud data
-      if (pointCloudObj) {
-        updatePointCloud(pointCloudObj);
-      }
-
       renderer.render(scene, camera);
     };
     animate();
 
-    // Handle window resize
-    const handleResize = () => {
-      camera.aspect =
-        mountRef.current.clientWidth / mountRef.current.clientHeight;
+    // ——— resize handling ———
+    const onResize = () => {
+      const w = mountRef.current.clientWidth;
+      const h = mountRef.current.clientHeight;
+      camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setSize(
-        mountRef.current.clientWidth,
-        mountRef.current.clientHeight
-      );
+      renderer.setSize(w, h);
     };
+    window.addEventListener("resize", onResize);
 
-    window.addEventListener("resize", handleResize);
-
-    // Clean up
+    // ——— cleanup ———
     return () => {
-      window.removeEventListener("resize", handleResize);
-      mountRef.current?.removeChild(renderer.domElement);
+      listener.unsubscribe();
+      window.removeEventListener("resize", onResize);
+      mountRef.current.removeChild(renderer.domElement);
       renderer.dispose();
     };
   }, []);
 
-  // Create a point cloud with simulated LIDAR data
-  const createPointCloud = () => {
-    // Generate initial point cloud data
-    const numPoints = 5000;
-    const positions = new Float32Array(numPoints * 3);
-    const colors = new Float32Array(numPoints * 3);
-
-    // Fill with simulated LIDAR scan data (a cylinder shape pattern)
-    for (let i = 0; i < numPoints; i++) {
-      // Simulate a 360-degree LIDAR scan pattern
-      const theta = Math.random() * Math.PI * 2;
-      const radius = 2 + Math.random() * 3;
-      const height = Math.random() * 2 - 1;
-
-      // Convert to Cartesian coordinates
-      const x = radius * Math.cos(theta);
-      const y = height;
-      const z = radius * Math.sin(theta);
-
-      // Add some noise
-      const noise = Math.random() * 0.1;
-
-      // Set position
-      positions[i * 3] = x + noise;
-      positions[i * 3 + 1] = y + noise;
-      positions[i * 3 + 2] = z + noise;
-
-      // Set color based on distance
-      const distance = Math.sqrt(x * x + y * y + z * z);
-      const normalizedDistance = Math.min(distance / 6, 1);
-
-      // Create a color gradient from blue (close) to red (far)
-      colors[i * 3] = normalizedDistance; // R
-      colors[i * 3 + 1] = 0.2; // G
-      colors[i * 3 + 2] = 1 - normalizedDistance; // B
-    }
-
-    // Create geometry
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-
-    // Point material
-    const material = new THREE.PointsMaterial({
-      size: 0.05,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.8,
-    });
-
-    // Create point cloud
-    const pointCloud = new THREE.Points(geometry, material);
-
-    return pointCloud;
-  };
-
-  // Simulate updating the point cloud with new LIDAR data
-  const updatePointCloud = (pointCloud) => {
-    if (!pointCloud) return;
-
-    const positions = pointCloud.geometry.attributes.position.array;
-
-    // Simulate slight movement or changes in the data
-    for (let i = 0; i < positions.length; i += 3) {
-      positions[i] += (Math.random() - 0.5) * 0.01;
-      positions[i + 1] += (Math.random() - 0.5) * 0.01;
-      positions[i + 2] += (Math.random() - 0.5) * 0.01;
-    }
-
-    // Mark attributes for update
-    pointCloud.geometry.attributes.position.needsUpdate = true;
-  };
-
   return <Box ref={mountRef} sx={{ width: "100%", height: "100%" }} />;
+}
+
+// ——— helper: make one‐point Geometry so Three.js won’t complain ———
+function createEmptyPointCloud() {
+  const geom = new THREE.BufferGeometry();
+  const positions = new Float32Array(3);
+  geom.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geom.attributes.position.setUsage(THREE.DynamicDrawUsage);
+
+  const mat = new THREE.PointsMaterial({
+    size: 0.05,
+    color: 0xffffff
+  });
+
+  return new THREE.Points(geom, mat);
+}
+
+// ——— helper: decode base64 PointCloud2 → [{x,y,z},…] ———
+function parsePointCloud2(msg) {
+  const { width, height, point_step, is_bigendian, data: b64 } = msg;
+  const bin = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+  const view = new DataView(bin.buffer);
+  const little = !is_bigendian;
+  const n = width * height;
+  const out = new Array(n);
+
+  for (let i = 0; i < n; i++) {
+    const off = i * point_step;
+    const x = view.getFloat32(off, little);
+    const y = view.getFloat32(off + 4, little);
+    const z = view.getFloat32(off + 8, little);
+    out[i] = { x, y, z };
+  }
+  return out;
+}
+
+// ——— helper: resize/reset buffer & write XYZ into it ———
+function updateGeometry(pointCloud, points) {
+  const geom = pointCloud.geometry;
+  let posArr = geom.attributes.position.array;
+
+  // rebuild buffer if size changed
+  if (points.length * 3 !== posArr.length) {
+    posArr = new Float32Array(points.length * 3);
+    geom.setAttribute("position", new THREE.BufferAttribute(posArr, 3));
+    geom.attributes.position.setUsage(THREE.DynamicDrawUsage);
+  }
+
+  for (let i = 0; i < points.length; i++) {
+    const { x, y, z } = points[i];
+    posArr[i * 3] = x;
+    posArr[i * 3 + 1] = y;
+    posArr[i * 3 + 2] = z;
+  }
+
+  geom.attributes.position.needsUpdate = true;
 }

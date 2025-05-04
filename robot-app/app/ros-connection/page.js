@@ -1,6 +1,6 @@
 'use client';
 import { Box, Typography } from '@mui/material';
-import RosConnection from '../components/ros/RosConnection';
+import RosConnection from '../components/ros/ConnectionStatus';
 import MainLayout from '../components/layout/MainLayout';
 
 export default function RosConnectionPage() {

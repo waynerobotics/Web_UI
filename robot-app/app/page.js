@@ -4,7 +4,7 @@ import { Box, Grid, Container, Typography } from '@mui/material';
 import MainLayout from './components/layout/MainLayout';
 import RobotViewer from './components/robot/RobotViewer';
 import LidarPointCloud from './components/lidar/LidarPointCloud';
-import RosConnection from './components/ros/RosConnection';
+import RosConnection from './components/ros/ConnectionStatus';
 import DataDashboard from './components/dashboard/DataDashboard';
 import BatteryGauge from './components/ui/BatteryGauge';
 import Speedometer from './components/ui/Speedometer';
