@@ -1,3 +1,4 @@
+// app/components/lidar/LidarPointCloud.js
 "use client";
 
 import ROSLIB from "roslib";
@@ -7,11 +8,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Box } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 
-// … helpers (createEmptyPointCloud, parsePointCloud2, updateGeometry) …
-
 export default function LidarPointCloud() {
   const mountRef = useRef(null);
-  const [pcObject, setPcObject] = useState(null);
 
   useEffect(() => {
     // ——— Three.js setup ———
@@ -30,28 +28,27 @@ export default function LidarPointCloud() {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
 
+    // grid + light
     scene.add(new THREE.GridHelper(10, 10, 0x444444, 0x888888));
     scene.add(new THREE.AmbientLight(0xffffff, 0.5));
 
     // ——— empty point cloud placeholder ———
     const pointCloud = createEmptyPointCloud();
     scene.add(pointCloud);
-    setPcObject(pointCloud);
 
     // ——— subscribe to ROS2 PointCloud2 ———
     const listener = new ROSLIB.Topic({
       ros,
-      name: "/unilidar/cloud", // ← your live topic
+      name: "/unilidar/cloud",
       messageType: "sensor_msgs/PointCloud2",
       throttle_rate: 30,
     });
-
     listener.subscribe((msg) => {
       const pts = parsePointCloud2(msg);
       updateGeometry(pointCloud, pts);
     });
 
-    // ——— animation loop ———
+    // ——— render loop ———
     const animate = () => {
       requestAnimationFrame(animate);
       controls.update();
@@ -60,28 +57,23 @@ export default function LidarPointCloud() {
     animate();
 
     // ——— resize handling ———
-    const onResize = () => {
+    function onResize() {
+      if (!mountRef.current) return;
       const w = mountRef.current.clientWidth;
       const h = mountRef.current.clientHeight;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
-    };
+    }
     window.addEventListener("resize", onResize);
 
     // ——— cleanup ———
     return () => {
       listener.unsubscribe();
       window.removeEventListener("resize", onResize);
-
-      // Add null check to prevent error when component unmounts
-      if (
-        mountRef.current &&
-        renderer.domElement.parentNode === mountRef.current
-      ) {
+      if (mountRef.current?.contains(renderer.domElement)) {
         mountRef.current.removeChild(renderer.domElement);
       }
-
       renderer.dispose();
     };
   }, []);
@@ -89,58 +81,59 @@ export default function LidarPointCloud() {
   return <Box ref={mountRef} sx={{ width: "100%", height: "100%" }} />;
 }
 
-// ——— helper: make one‐point Geometry so Three.js won’t complain ———
+
+// ——— helper: make a one‐point BufferGeometry so Three.js isn’t upset ———
 function createEmptyPointCloud() {
   const geom = new THREE.BufferGeometry();
   const positions = new Float32Array(3);
-  geom.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  geom.attributes.position.setUsage(THREE.DynamicDrawUsage);
+  geom.setAttribute(
+    "position",
+    new THREE.BufferAttribute(positions, 3).setUsage(THREE.DynamicDrawUsage)
+  );
 
-  const mat = new THREE.PointsMaterial({
-    size: 0.05,
-    color: 0xffffff,
-  });
-
+  const mat = new THREE.PointsMaterial({ size: 0.05, color: 0xffffff });
   return new THREE.Points(geom, mat);
 }
 
-// ——— helper: decode base64 PointCloud2 → [{x,y,z},…] ———
+
+// ——— helper: parse ROS PointCloud2 into an array of {x,y,z} ———
 function parsePointCloud2(msg) {
   const { width, height, point_step, is_bigendian, data: b64 } = msg;
   const bin = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
   const view = new DataView(bin.buffer);
   const little = !is_bigendian;
   const n = width * height;
-  const out = new Array(n);
+  const output = new Array(n);
 
   for (let i = 0; i < n; i++) {
     const off = i * point_step;
     const x = view.getFloat32(off, little);
     const y = view.getFloat32(off + 4, little);
     const z = view.getFloat32(off + 8, little);
-    out[i] = { x, y, z };
+    output[i] = { x, y, z };
   }
-  return out;
+  return output;
 }
 
-// ——— helper: resize/reset buffer & write XYZ into it ———
+
+// ——— helper: resize/reset the buffer & fill in new XYZ data ———
 function updateGeometry(pointCloud, points) {
   const geom = pointCloud.geometry;
-  let posArr = geom.attributes.position.array;
+  let arr = geom.attributes.position.array;
 
-  // rebuild buffer if size changed
-  if (points.length * 3 !== posArr.length) {
-    posArr = new Float32Array(points.length * 3);
-    geom.setAttribute("position", new THREE.BufferAttribute(posArr, 3));
-    geom.attributes.position.setUsage(THREE.DynamicDrawUsage);
+  if (points.length * 3 !== arr.length) {
+    arr = new Float32Array(points.length * 3);
+    geom.setAttribute(
+      "position",
+      new THREE.BufferAttribute(arr, 3).setUsage(THREE.DynamicDrawUsage)
+    );
   }
 
   for (let i = 0; i < points.length; i++) {
     const { x, y, z } = points[i];
-    posArr[i * 3] = x;
-    posArr[i * 3 + 1] = y;
-    posArr[i * 3 + 2] = z;
+    arr[i * 3]     = x;
+    arr[i * 3 + 1] = y;
+    arr[i * 3 + 2] = z;
   }
-
   geom.attributes.position.needsUpdate = true;
 }

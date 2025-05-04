@@ -1,13 +1,37 @@
+// app/lidar-map/page.js
 "use client";
 
-import ConnectionStatus  from "@/components/ros/ConnectionStatus";
-import LidarPointCloud   from "@/components/lidar/LidarPointCloud";
+import Link from "next/link";
+import { Box, Button } from "@mui/material";
+import ConnectionStatus from "@/components/ros/ConnectionStatus";
+import LidarPointCloud from "@/components/lidar/LidarPointCloud";
 
-export default function RosConnectionPage() {
+export default function LidarMapPage() {
   return (
-    <div style={{ width: "100%", height: "100vh" }}>
-      <ConnectionStatus />
+    <Box sx={{ position: "relative", width: "100%", height: "100vh", bgcolor: "black" }}>
+      {/* ← Back button */}
+      <Button
+        component={Link}
+        href="/ros-connection"
+        variant="contained"
+        size="small"
+        sx={{
+          position: "absolute",
+          top: 16,
+          left: 16,
+          zIndex: 10,
+        }}
+      >
+        ← Back
+      </Button>
+
+      {/* connection status chip */}
+      <Box sx={{ position: "absolute", top: 16, right: 16, zIndex: 10 }}>
+        <ConnectionStatus />
+      </Box>
+
+      {/* full-screen Three.js canvas */}
       <LidarPointCloud />
-    </div>
+    </Box>
   );
 }

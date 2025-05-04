@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { ColorModeContext } from "@/app/layout";
+import { ColorModeContext } from "../../layout";
 
 export default function SettingsForm() {
   // Context for color mode

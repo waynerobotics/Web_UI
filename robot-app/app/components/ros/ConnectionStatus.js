@@ -9,18 +9,27 @@ export default function ConnectionStatus() {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    // Define handler functions explicitly so we can reference them in cleanup
-    const handleConnection = () => setConnected(true);
-    const handleClose = () => setConnected(false);
+    // 1) Define your handlers as named functions:
+    function handleConnect() {
+      setConnected(true);
+    }
+    function handleClose() {
+      setConnected(false);
+    }
+    function handleError() {
+      setConnected(false);
+    }
 
-    // update on connect / close
-    ros.on("connection", handleConnection);
-    ros.on("close", handleClose);
+    // 2) Register them:
+    ros.on("connection", handleConnect);
+    ros.on("close",      handleClose);
+    ros.on("error",      handleError);
 
-    // cleanup - must use the same function references
+    // 3) Cleanup by unregistering the *same* function references:
     return () => {
-      ros.off("connection", handleConnection);
-      ros.off("close", handleClose);
+      ros.off("connection", handleConnect);
+      ros.off("close",      handleClose);
+      ros.off("error",      handleError);
     };
   }, []);
 
