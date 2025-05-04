@@ -10,22 +10,59 @@
       href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
     />
     <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/icon?family=Material+Icons"
-  />
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
     <title>GROOT Web</title>
     <script src="include/roslib.min.js"></script>
     <script src="include/eventemitter2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <!-- Add OrbitControls for mouse interaction -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
     <script src="joystick_ros_control.js"></script>
     <style>
-      /* CSS to add spacing */
+      body {
+        font-family: "Inter", sans-serif;
+        margin: 20px;
+      }
+
       canvas {
-        margin-top: 20px; /* Add margin to the top of the canvas */
-        border: 1px solid black; /* Optional: To visually distinguish the canvas */
+        margin-top: 20px;
+        border: 1px solid black;
       }
 
       h1 {
-        margin-bottom: 10px; /* Add margin to the bottom of the header */
+        margin-bottom: 10px;
+      }
+
+      button {
+        margin: 5px;
+        padding: 8px 12px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      #pointCloudContainer {
+        width: 500px;
+        height: 500px;
+        border: 1px solid #ccc;
+        margin-top: 20px;
+        position: relative;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #f8f8f8;
+      }
+
+      .controls-info {
+        margin-top: 10px;
+        font-size: 0.9em;
+        color: #666;
       }
     </style>
   </head>
@@ -43,10 +80,15 @@
       <button onclick="stopTurtle()">Stop</button>
     </div>
 
-    <h2>Available Turtle Topics</h2>
-    <ul id="topicList"></ul>
+    <h2>Point Cloud Visualization</h2>
+    <div id="pointCloudContainer"></div>
+    <div class="controls-info">
+      Mouse controls: Left-click: Rotate | Right-click: Pan | Scroll: Zoom
+    </div>
+    <button onclick="togglePointCloudSubscription()">Toggle Point Cloud</button>
 
-    <!-- Button to update the list of topics -->
+    <h2>Available Topics</h2>
+    <ul id="topicList"></ul>
     <button onclick="getTurtleTopics()">Update Topic List</button>
   </body>
 </html>
