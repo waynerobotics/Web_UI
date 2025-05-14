@@ -52,7 +52,6 @@ export default function SettingsForm() {
       sx={{ display: "flex", flexDirection: "column", gap: 3, width: 400 }}
     >
       <Typography variant="h6">Application Settings</Typography>
-
       <TextField
         label="ROS Endpoint URL"
         value={rosEndpoint}
@@ -60,7 +59,6 @@ export default function SettingsForm() {
         placeholder="ws://localhost:9090"
         fullWidth
       />
-
       <Box>
         <Typography gutterBottom>Data Refresh Rate (sec)</Typography>
         <Slider
@@ -73,7 +71,6 @@ export default function SettingsForm() {
           valueLabelDisplay="auto"
         />
       </Box>
-
       <Box>
         <Typography gutterBottom>Sensor Threshold</Typography>
         <Slider
@@ -85,18 +82,13 @@ export default function SettingsForm() {
           valueLabelDisplay="auto"
         />
       </Box>
-
       <FormControlLabel
         control={
-          <Switch
-            checked={darkModeSwitch}
-            onChange={handleDarkModeToggle}
-          />
+          <Switch checked={darkModeSwitch} onChange={handleDarkModeToggle} />
         }
         label="Enable Dark Mode"
-      />
-
-      <Button type="submit" variant="contained">
+      />{" "}
+      <Button type="submit" variant="contained" color="secondary">
         Save Settings
       </Button>
     </Box>

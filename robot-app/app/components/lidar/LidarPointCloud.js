@@ -59,7 +59,7 @@ export default function LidarPointCloud({ useMock = true }) {
           positions[i * 3 + 2] = z;
 
           const color = new THREE.Color();
-          color.setHSL((1 - y / 3), 1, 0.5); // height based
+          color.setHSL(1 - y / 3, 1, 0.5); // height based
           colors[i * 3] = color.r;
           colors[i * 3 + 1] = color.g;
           colors[i * 3 + 2] = color.b;
@@ -84,7 +84,7 @@ export default function LidarPointCloud({ useMock = true }) {
         pos[i * 3 + 2] = z;
 
         const color = new THREE.Color();
-        color.setHSL((1 - y / 5), 1, 0.5);
+        color.setHSL(1 - y / 5, 1, 0.5);
         col[i * 3] = color.r;
         col[i * 3 + 1] = color.g;
         col[i * 3 + 2] = color.b;
@@ -141,7 +141,7 @@ export default function LidarPointCloud({ useMock = true }) {
     };
   }, [useMock]);
 
-  return <Box ref={mountRef} sx={{ width: "100%", height: "100%" }} />;
+  return <Box ref={mountRef} sx={{ width: "20vw", height: "50vh" }} />;
 }
 
 function parsePointCloud2(msg) {

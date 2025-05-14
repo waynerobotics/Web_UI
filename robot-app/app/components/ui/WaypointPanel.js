@@ -27,17 +27,9 @@ export default function WaypointPanel() {
   return (
     <Box
       sx={{
-        p: 2,
-        bgcolor: "background.paper",
-        borderRadius: 2,
-        boxShadow: 1,
         height: "100%",
       }}
     >
-      <Typography variant="h6" gutterBottom>
-        Next Waypoint
-      </Typography>
-
       <Stack spacing={1}>
         <Typography variant="body2">
           Coordinates:{" "}

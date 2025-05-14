@@ -32,15 +32,21 @@ export default function RootLayout({ children }) {
     }),
     [mode]
   );
-
   // Memoized theme that rebuilds on mode change
   const theme = useMemo(
     () =>
       createTheme({
         palette: {
           mode,
-          primary: { main: "#3f51b5" },
-          secondary: { main: "#f50057" },
+          primary: { main: "#093F39" }, // Green (9,63,57)
+          secondary: { main: "#FFCC33" }, // Gold color
+          background: {
+            default: mode === "light" ? "#e5e5e5" : "#121212", // Light mode: (229,229,229), Dark mode: darker
+            paper: mode === "light" ? "#ffffff" : "#1e1e1e",
+          },
+          text: {
+            primary: mode === "light" ? "#000000" : "#ffffff",
+          },
         },
         typography: {
           fontFamily: inter.style.fontFamily,

@@ -91,57 +91,102 @@ export default function RobotViewer() {
       renderer.dispose();
     };
   }, []);
-
-  // Create a simple robot model
+  // Create a robot model based on the URDF description
   const createRobotModel = () => {
     const robotGroup = new THREE.Group();
 
+    // Robot dimensions from URDF (converted to a reasonable scale for Three.js)
+    const baseWidth = 0.66;
+    const baseLength = 0.91;
+    const baseHeight = 0.635;
+    const wheelRadius = 0.1;
+    const wheelWidth = 0.076;
+
     // Robot base (chassis)
-    const baseGeometry = new THREE.BoxGeometry(1.5, 0.3, 2);
-    const baseMaterial = new THREE.MeshStandardMaterial({ color: 0x3a86ff });
+    const baseGeometry = new THREE.BoxGeometry(
+      baseLength,
+      baseHeight,
+      baseWidth
+    );
+    const baseMaterial = new THREE.MeshStandardMaterial({ color: 0x00ffff }); // Cyan
     const base = new THREE.Mesh(baseGeometry, baseMaterial);
-    base.position.y = 0.15;
+    base.position.y = baseHeight / 2;
     robotGroup.add(base);
 
-    // Robot body
-    const bodyGeometry = new THREE.BoxGeometry(1, 0.8, 1.2);
-    const bodyMaterial = new THREE.MeshStandardMaterial({ color: 0x8338ec });
-    const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-    body.position.y = 0.7;
-    robotGroup.add(body);
+    // Robot wheels (6 wheels - 3 on each side)
+    const wheelGeometry = new THREE.CylinderGeometry(
+      wheelRadius,
+      wheelRadius,
+      wheelWidth,
+      16
+    );
+    const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x808080 }); // Gray
 
-    // Robot head
-    const headGeometry = new THREE.SphereGeometry(0.3, 16, 16);
-    const headMaterial = new THREE.MeshStandardMaterial({ color: 0xff006e });
-    const head = new THREE.Mesh(headGeometry, headMaterial);
-    head.position.y = 1.3;
-    head.position.z = 0.2;
-    robotGroup.add(head);
-
-    // Robot wheels
-    const wheelGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.2, 16);
-    const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x212529 });
-
-    const positions = [
-      [-0.85, 0.3, 0.7],
-      [0.85, 0.3, 0.7],
-      [-0.85, 0.3, -0.7],
-      [0.85, 0.3, -0.7],
+    // Wheel positions based on URDF (left side)
+    const leftWheelPositions = [
+      [-baseLength / 2 + 0.2, wheelRadius, baseWidth / 2 + 0.025], // front left
+      [0, wheelRadius, baseWidth / 2 + 0.025], // middle left
+      [baseLength / 2 - 0.2, wheelRadius, baseWidth / 2 + 0.025], // back left
     ];
 
-    positions.forEach(([x, y, z]) => {
+    // Wheel positions (right side)
+    const rightWheelPositions = [
+      [-baseLength / 2 + 0.2, wheelRadius, -(baseWidth / 2 + 0.025)], // front right
+      [0, wheelRadius, -(baseWidth / 2 + 0.025)], // middle right
+      [baseLength / 2 - 0.2, wheelRadius, -(baseWidth / 2 + 0.025)], // back right
+    ];
+
+    // Add left wheels
+    leftWheelPositions.forEach(([x, y, z]) => {
       const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
-      wheel.rotation.z = Math.PI / 2;
+      wheel.rotation.x = Math.PI / 2; // Rotate to align with correct axis
       wheel.position.set(x, y, z);
       robotGroup.add(wheel);
     });
 
-    // Add a sensor on top (represents LIDAR or camera)
-    const sensorGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.1, 16);
-    const sensorMaterial = new THREE.MeshStandardMaterial({ color: 0xfb5607 });
-    const sensor = new THREE.Mesh(sensorGeometry, sensorMaterial);
-    sensor.position.y = 1.2;
-    robotGroup.add(sensor);
+    // Add right wheels
+    rightWheelPositions.forEach(([x, y, z]) => {
+      const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
+      wheel.rotation.x = Math.PI / 2; // Rotate to align with correct axis
+      wheel.position.set(x, y, z);
+      robotGroup.add(wheel);
+    });
+
+    // LiDAR sensors (front left and back right)
+    const lidarGeometry = new THREE.CylinderGeometry(0.04, 0.04, 0.1, 16);
+    const lidarMaterial = new THREE.MeshStandardMaterial({ color: 0x333333 }); // Dark gray
+
+    // Front left LiDAR
+    const frontLeftLidar = new THREE.Mesh(lidarGeometry, lidarMaterial);
+    frontLeftLidar.position.set(
+      baseLength / 2 - 0.1,
+      baseHeight,
+      baseWidth / 2 - 0.1
+    );
+    robotGroup.add(frontLeftLidar);
+
+    // Back right LiDAR
+    const backRightLidar = new THREE.Mesh(lidarGeometry, lidarMaterial);
+    backRightLidar.position.set(
+      -baseLength / 2 + 0.1,
+      baseHeight,
+      -baseWidth / 2 + 0.1
+    );
+    robotGroup.add(backRightLidar);
+
+    // IMU sensor representation
+    const imuGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+    const imuMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 }); // Green
+    const imu = new THREE.Mesh(imuGeometry, imuMaterial);
+    imu.position.set(0, baseHeight + 0.05, 0); // Positioned on top of the base
+    robotGroup.add(imu);
+
+    // GPS sensor representation
+    const gpsGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+    const gpsMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 }); // Red
+    const gps = new THREE.Mesh(gpsGeometry, gpsMaterial);
+    gps.position.set(0, baseHeight + 0.1, 0); // Positioned on top of the IMU
+    robotGroup.add(gps);
 
     return robotGroup;
   };

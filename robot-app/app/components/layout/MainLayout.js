@@ -57,7 +57,11 @@ export default function MainLayout({ children }) {
     { text: "LIDAR Map", icon: faMap, path: "/lidar-map" },
     { text: "ROS2 Connection", icon: faWifi, path: "/ros-connection" },
     { text: "Data Dashboard", icon: faChartLine, path: "/dashboard" },
-    { text: "Turtle Control", icon: faArrowUpRightFromSquare, path: "/turtle-control" },
+    {
+      text: "Turtle Control",
+      icon: faArrowUpRightFromSquare,
+      path: "/turtle-control",
+    },
     { text: "Current Sensor", icon: faBolt, path: "/current-sensor" },
     { text: "IMU", icon: faCompass, path: "/imu" },
     { text: "Costmap", icon: faMapLocation, path: "/costmap" },
@@ -68,20 +72,25 @@ export default function MainLayout({ children }) {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-
-      {/* AppBar */}
+      <CssBaseline /> {/* AppBar */}
       <AppBar
         position="fixed"
         sx={{
-          width: `calc(100% - ${drawerOpen ? expandedWidth : collapsedWidth}px)`,
-          ml: `${drawerOpen ? expandedWidth : collapsedWidth}px`,
-          backgroundColor: "#2e7d32",
+          width: `calc(100% - ${
+            drawerOpen ? expandedWidth : collapsedWidth
+          }px)`,
+          // ml: `0px`,
+          backgroundColor: "#093F39", // Primary green color (9,63,57)
         }}
       >
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton onClick={toggleDrawer} color="inherit" edge="start" sx={{ mr: 2 }}>
+            <IconButton
+              onClick={toggleDrawer}
+              color="inherit"
+              edge="start"
+              sx={{ mr: 2 }}
+            >
               {drawerOpen ? <ChevronLeftIcon /> : <MenuIcon />}
             </IconButton>
             <Typography variant="h6" noWrap>
@@ -116,8 +125,7 @@ export default function MainLayout({ children }) {
             </Tooltip>
           </Box>
         </Toolbar>
-      </AppBar>
-
+      </AppBar>{" "}
       {/* Drawer */}
       <Drawer
         variant="permanent"
@@ -129,6 +137,9 @@ export default function MainLayout({ children }) {
             overflowX: "hidden",
             whiteSpace: "nowrap",
             boxSizing: "border-box",
+            backgroundColor:
+              theme.palette.mode === "light" ? "#FFFFFF" : "#1e1e1e", // White in light mode, dark in dark mode
+            color: theme.palette.mode === "light" ? "#000000" : "#FFCC33", // Black text in light mode, white in dark mode
             transition: theme.transitions.create("width", {
               easing: theme.transitions.easing.sharp,
               duration: theme.transitions.duration.enteringScreen,
@@ -143,40 +154,73 @@ export default function MainLayout({ children }) {
               src={logoPath}
               alt="Logo"
               sx={{ height: 40, cursor: "pointer" }}
-            />
+            />{" "}
           </Link>
         </Toolbar>
-        <Divider />
+        <Divider
+          sx={{
+            borderColor:
+              theme.palette.mode === "light"
+                ? "rgba(0, 0, 0, 0.12)"
+                : "rgba(255, 255, 255, 0.12)",
+          }}
+        />
         <List>
           {menuItems.map((item) => (
-            <Tooltip key={item.text} title={drawerOpen ? "" : item.text} placement="right" arrow>
+            <Tooltip
+              key={item.text}
+              title={drawerOpen ? "" : item.text}
+              placement="right"
+              arrow
+            >
               <ListItem disablePadding sx={{ display: "block" }}>
                 <Link href={item.path} style={{ textDecoration: "none" }}>
+                  {" "}
                   <ListItemButton
                     sx={{
                       minHeight: 48,
                       justifyContent: drawerOpen ? "initial" : "center",
                       px: 2.5,
+                      "&:hover": {
+                        backgroundColor:
+                          theme.palette.mode === "light"
+                            ? "rgba(9, 63, 57, 0.08)"
+                            : "rgba(255, 255, 255, 0.08)",
+                      },
                     }}
                   >
+                    {" "}
                     <ListItemIcon
                       sx={{
                         minWidth: 0,
                         mr: drawerOpen ? 2 : "auto",
                         justifyContent: "center",
+                        color:
+                          theme.palette.mode === "light"
+                            ? "#093F39"
+                            : "#FFFFFF", // Green in light mode, white in dark mode
                       }}
                     >
                       <FontAwesomeIcon icon={item.icon} size="lg" />
                     </ListItemIcon>
-                    {drawerOpen && <ListItemText primary={item.text} />}
+                    {drawerOpen && (
+                      <ListItemText
+                        primary={item.text}
+                        sx={{
+                          color:
+                            theme.palette.mode === "light"
+                              ? "#000000"
+                              : "#FFFFFF",
+                        }}
+                      />
+                    )}
                   </ListItemButton>
                 </Link>
               </ListItem>
             </Tooltip>
           ))}
         </List>
-      </Drawer>
-
+      </Drawer>{" "}
       {/* Main Content */}
       <Box
         component="main"
@@ -184,7 +228,8 @@ export default function MainLayout({ children }) {
           flexGrow: 1,
           p: 3,
           mt: 8,
-          ml: `${drawerOpen ? expandedWidth : collapsedWidth}px`,
+          backgroundColor: theme.palette.background.default,
+          // ml: `3vw`,
           transition: theme.transitions.create("margin", {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
