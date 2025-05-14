@@ -7,20 +7,47 @@ import { Box, Typography, Chip } from "@mui/material";
 
 export default function ConnectionStatus() {
   const [connected, setConnected] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    // Define handler functions explicitly so we can reference them in cleanup
-    const handleConnection = () => setConnected(true);
-    const handleClose = () => setConnected(false);
+    let isMounted = true;
 
-    // update on connect / close
-    ros.on("connection", handleConnection);
-    ros.on("close", handleClose);
+    const handleConnection = () => {
+      if (isMounted) {
+        setConnected(true);
+        setError(false);
+      }
+    };
 
-    // cleanup - must use the same function references
+    const handleClose = () => {
+      if (isMounted) setConnected(false);
+    };
+
+    const handleError = (err) => {
+      console.error("ROS connection error:", err);
+      if (isMounted) {
+        setConnected(false);
+        setError(true);
+      }
+    };
+
+    try {
+      ros.on("connection", handleConnection);
+      ros.on("close", handleClose);
+      ros.on("error", handleError);
+    } catch (err) {
+      handleError(err);
+    }
+
     return () => {
-      ros.off("connection", handleConnection);
-      ros.off("close", handleClose);
+      isMounted = false;
+      try {
+        ros.off("connection", handleConnection);
+        ros.off("close", handleClose);
+        ros.off("error", handleError);
+      } catch (cleanupErr) {
+        console.warn("ROS cleanup failed:", cleanupErr);
+      }
     };
   }, []);
 
@@ -30,8 +57,8 @@ export default function ConnectionStatus() {
         ROSBridge:
       </Typography>
       <Chip
-        label={connected ? "Connected" : "Disconnected"}
-        color={connected ? "success" : "error"}
+        label={error ? "Error" : connected ? "Connected" : "Disconnected"}
+        color={error ? "warning" : connected ? "success" : "error"}
         size="small"
       />
     </Box>

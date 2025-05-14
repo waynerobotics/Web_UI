@@ -4,7 +4,7 @@ import ROSLIB from "roslib";
 const ROSBRIDGE_HOST = "192.168.2.102";  // ← your NUC’s IP
 const ROSBRIDGE_PORT = 9090;             // ← default rosbridge port
 
-// Build the WebSocket URL with exactly two slashes after “ws:”
+// Build the WebSocket URL 
 const URL = `ws://${ROSBRIDGE_HOST}:${ROSBRIDGE_PORT}`;
 
 console.log("🔗 connecting to rosbridge at", URL);
