@@ -1,17 +1,9 @@
 "use client";
 
 import { Box, Grid, Container, Typography } from "@mui/material";
-import MainLayout from "./components/layout/MainLayout";
-import RobotViewer from "./components/robot/RobotViewer";
-import LidarPointCloud from "./components/lidar/LidarPointCloud";
-import RosConnection from "./components/ros/ConnectionStatus";
-import DataDashboard from "./components/dashboard/DataDashboard";
-import BatteryIndicator from "./components/ui/BatteryGauge";
-import Compass from "./components/ui/Compass";
-import Speedometer from "./components/ui/Speedometer";
-import WaypointPanel from "./components/ui/WaypointPanel";
-import CostmapViewer from "./components/costmap/CostmapViewer";
-import Card from "./components/ui/Card";
+import MainLayout from ".././components/layout/MainLayout";
+import RosConnection from ".././components/ros/ConnectionStatus";
+import Card from ".././components/ui/Card";
 
 export default function Home() {
   return (
@@ -44,10 +36,11 @@ export default function Home() {
           }}
         >
           <Grid item xs={12}>
-            {" "}
-            <Box sx={{ height: "18m", width: "100em" }}>
+            <Box sx={{ height: "20em", width: "100em" }}>
               <Card title="Robot Data Dashboard" titleVariant="h5">
-                <DataDashboard />
+                <Typography variant="body1">
+                  Dashboard Content Placeholder
+                </Typography>
               </Card>
             </Box>
           </Grid>
@@ -62,32 +55,39 @@ export default function Home() {
             alignItems: "center",
           }}
         >
-          {" "}
           <Grid item xs={12} sm={6} md={3}>
-            <Box sx={{ height: "18em", width: "20em" }}>
+            <Box sx={{ height: "20em", width: "20em" }}>
               <Card title="Battery">
-                <BatteryIndicator />
+                <Typography variant="body1">
+                  Battery Content Placeholder
+                </Typography>
               </Card>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Box sx={{ height: "18em", width: "20em" }}>
+            <Box sx={{ height: "20em", width: "20em" }}>
               <Card title="Heading">
-                <Compass heading={123} />
+                <Typography variant="body1">
+                  Heading Content Placeholder
+                </Typography>
               </Card>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Box sx={{ height: "18em", width: "20em" }}>
+            <Box sx={{ height: "20em", width: "20em" }}>
               <Card title="Velocity">
-                <Speedometer />
+                <Typography variant="body1">
+                  Velocity Content Placeholder
+                </Typography>
               </Card>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Box sx={{ height: "18em", width: "20em" }}>
+            <Box sx={{ height: "20em", width: "20em" }}>
               <Card title="Next Waypoint">
-                <WaypointPanel />
+                <Typography variant="body1">
+                  Next Waypoint Content Placeholder
+                </Typography>
               </Card>
             </Box>
           </Grid>
@@ -101,39 +101,28 @@ export default function Home() {
             alignItems: "center",
           }}
         >
-          {" "}
           <Grid item xs={12} md={4}>
-            <Box sx={{ height: "30em", width: "30em" }}>
+            <Box sx={{ height: "35em", width: "30em" }}>
               <Card title="Robot Visualization">
-                <Box sx={{ width: "100%", height: "100%" }}>
-                  <RobotViewer />
-                </Box>
+                <Typography variant="body1">
+                  Robot Visualization Placeholder
+                </Typography>
               </Card>
             </Box>
           </Grid>
           <Grid item xs={12} md={4}>
-            <Box sx={{ height: "30em", width: "30em" }}>
+            <Box sx={{ height: "35em", width: "30em" }}>
               <Card title="LIDAR Point Cloud">
-                <Box
-                  sx={{ width: "100%", height: "100%", position: "relative" }}
-                >
-                  <LidarPointCloud />
-                </Box>
+                <Typography variant="body1">
+                  LIDAR Point Cloud Placeholder
+                </Typography>
               </Card>
             </Box>
           </Grid>
           <Grid item xs={12} md={4}>
-            <Box sx={{ height: "30em", width: "30em" }}>
+            <Box sx={{ height: "35em", width: "30em" }}>
               <Card title="Cost Map">
-                <Box
-                  sx={{ width: "100%", height: "100%", position: "relative" }}
-                >
-                  <CostmapViewer
-                    useMock={true}
-                    showGlobal={true}
-                    showLocal={false}
-                  />
-                </Box>
+                <Typography variant="body1">Cost Map Placeholder</Typography>
               </Card>
             </Box>
           </Grid>

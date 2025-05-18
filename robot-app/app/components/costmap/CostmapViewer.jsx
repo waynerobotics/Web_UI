@@ -3,13 +3,9 @@
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import ROSLIB from "roslib";
+import ros from "@/lib/ros";
 
-/**
- * Props:
- * - useMock (bool): If true, renders mock data. If false, expects ROS2 data connection.
- * - showLocal (bool): Whether to show local costmap (mocked).
- * - showGlobal (bool): Whether to show global costmap (mocked).
- */
 export default function CostmapViewer({ useMock = true, showLocal = true, showGlobal = true }) {
   const mount = useRef(null);
 
@@ -54,7 +50,6 @@ export default function CostmapViewer({ useMock = true, showLocal = true, showGl
 
     function generateMockCostmap(group, size, colorFn, yOffset = 0.01) {
       group.clear();
-      const spacing = 1;
       for (let i = 0; i < size; i++) {
         for (let j = 0; j < size; j++) {
           const cost = Math.random();
@@ -71,21 +66,68 @@ export default function CostmapViewer({ useMock = true, showLocal = true, showGl
 
     function renderMockRobot() {
       robotGroup.clear();
-
-      // Main square base
       const baseGeo = new THREE.BoxGeometry(0.6, 0.2, 0.6);
       const baseMat = new THREE.MeshStandardMaterial({ color: 0x156289 });
       const baseMesh = new THREE.Mesh(baseGeo, baseMat);
       baseMesh.position.y = 0.1;
       robotGroup.add(baseMesh);
 
-      // LIDAR/sensor on top
       const lidarGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.1, 32);
       const lidarMat = new THREE.MeshStandardMaterial({ color: 0xff4444 });
       const lidarMesh = new THREE.Mesh(lidarGeo, lidarMat);
       lidarMesh.position.set(0, 0.25, 0);
       robotGroup.add(lidarMesh);
     }
+
+    function renderCostmapMsg(msg, group, colorFn, yOffset = 0.01) {
+      group.clear();
+
+      if (!msg || !msg.info || !Array.isArray(msg.data)) {
+        console.warn("Invalid or missing costmap data", msg);
+        return;
+      }
+
+      const { width, height, resolution, origin } = msg.info;
+      const data = msg.data;
+
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const index = y * width + x;
+          const value = data[index];
+          if (value === -1) continue;
+
+          const cost = value / 100;
+          const heightBox = 0.1 + cost * 0.4;
+          const color = colorFn(cost);
+
+          const geo = new THREE.BoxGeometry(resolution, heightBox, resolution);
+          const mat = new THREE.MeshStandardMaterial({ color, transparent: true, opacity: 0.7 });
+          const cell = new THREE.Mesh(geo, mat);
+
+          const worldX = origin.position.x + x * resolution;
+          const worldY = origin.position.y + y * resolution;
+          cell.position.set(worldX, heightBox / 2 + yOffset, worldY);
+
+          group.add(cell);
+        }
+      }
+    }
+
+    function renderGlobalCostmap(msg) {
+      renderCostmapMsg(msg, globalGroup, (cost) =>
+        new THREE.Color().setHSL((1 - cost) * 0.4, 1, 0.4)
+      );
+    }
+
+    function renderLocalCostmap(msg) {
+      renderCostmapMsg(msg, localGroup, (cost) =>
+        new THREE.Color().setHSL(0.1 + (1 - cost) * 0.3, 1, 0.6),
+        0.05
+      );
+    }
+
+    let globalSub = null;
+    let localSub = null;
 
     if (useMock) {
       if (showGlobal) {
@@ -101,8 +143,25 @@ export default function CostmapViewer({ useMock = true, showLocal = true, showGl
       }
       renderMockRobot();
     } else {
-      // TODO: Setup ROS connection and subscribe to real topics here
-      console.warn("ROS mode not implemented yet");
+      if (showGlobal) {
+        globalSub = new ROSLIB.Topic({
+          ros,
+          name: "/global_costmap/costmap",
+          messageType: "nav_msgs/OccupancyGrid",
+        });
+        globalSub.subscribe(renderGlobalCostmap);
+      }
+
+      if (showLocal) {
+        localSub = new ROSLIB.Topic({
+          ros,
+          name: "/local_costmap/costmap",
+          messageType: "nav_msgs/OccupancyGrid",
+        });
+        localSub.subscribe(renderLocalCostmap);
+      }
+
+      renderMockRobot();
     }
 
     const resize = () => {
@@ -131,6 +190,8 @@ export default function CostmapViewer({ useMock = true, showLocal = true, showGl
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
+      if (globalSub) globalSub.unsubscribe();
+      if (localSub) localSub.unsubscribe();
     };
   }, [useMock, showLocal, showGlobal]);
 

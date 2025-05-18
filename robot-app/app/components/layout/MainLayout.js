@@ -54,7 +54,7 @@ export default function MainLayout({ children }) {
 
   const menuItems = [
     { text: "Robot View", icon: faRobot, path: "/robot-view" },
-    { text: "LIDAR Map", icon: faMap, path: "/lidar-map" },
+    { text: "LIDAR Map", icon: faMap, path: "/lidar" },
     { text: "ROS2 Connection", icon: faWifi, path: "/ros-connection" },
     { text: "Data Dashboard", icon: faChartLine, path: "/dashboard" },
     {

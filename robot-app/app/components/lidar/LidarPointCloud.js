@@ -24,7 +24,10 @@ export default function LidarPointCloud({ useMock = true }) {
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
-    mountRef.current.appendChild(renderer.domElement);
+    if (!mountRef.current.contains(renderer.domElement)) {
+      mountRef.current.appendChild(renderer.domElement);
+    }
+    
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
@@ -131,6 +134,8 @@ export default function LidarPointCloud({ useMock = true }) {
       listener?.unsubscribe();
       cancelAnimationFrame(animationId);
       window.removeEventListener("resize", handleResize);
+      
+     
       if (
         mountRef.current &&
         renderer.domElement.parentNode === mountRef.current
@@ -141,7 +146,7 @@ export default function LidarPointCloud({ useMock = true }) {
     };
   }, [useMock]);
 
-  return <Box ref={mountRef} sx={{ width: "20vw", height: "50vh" }} />;
+  return <Box ref={mountRef} sx={{ width: "100%", height: "100%" }} />;
 }
 
 function parsePointCloud2(msg) {
