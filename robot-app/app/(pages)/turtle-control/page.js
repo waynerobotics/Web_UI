@@ -1,10 +1,9 @@
-'use client';
+"use client";
 
-import { Box, Typography } from '@mui/material';
-import MainLayout from '../components/layout/MainLayout';
-import TurtleControls from '../components/turtle/TurtleControls';
-import TurtleTopics from '../components/turtle/TurtleTopics';
-
+import { Box, Typography } from "@mui/material";
+import MainLayout from "../../components/layout/MainLayout";
+import TurtleControls from "../../components/turtle/TurtleControls";
+import TurtleTopics from "../../components/turtle/TurtleTopics";
 
 export default function TurtleControlPage() {
   return (

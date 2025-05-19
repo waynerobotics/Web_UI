@@ -2,8 +2,8 @@
 
 import { Box, Typography, ButtonGroup, Button } from "@mui/material";
 import { useState } from "react";
-import MainLayout from "../components/layout/MainLayout";
-import ModesViewer from "../components/modes/ModesViewer";
+import MainLayout from "../../components/layout/MainLayout";
+import ModesViewer from "../../components/modes/ModesViewer";
 
 export default function ModesPage() {
   const [modeIdx, setModeIdx] = useState(0);

@@ -1,27 +1,26 @@
-// app/current-sensor/page.js
 "use client";
 
 import { Box, Typography } from "@mui/material";
-import MainLayout          from "../components/layout/MainLayout";
-import CurrentSensorViewer from "../components/current-sensor/CurrentSensorViewer";
+import MainLayout from "../../components/layout/MainLayout";
+import IMUViewer from "../../components/imu/IMUViewer";
 
-export default function CurrentSensorPage() {
+export default function IMUPage() {
   return (
     <MainLayout>
       <Typography variant="h4" gutterBottom>
-        Current Sensor
+        IMU
       </Typography>
       <Box
         sx={{
           position: "relative",
-          pb: "56%",      // 16:9 aspect
+          pb: "56%", // 16:9 aspect
           height: 0,
           borderRadius: 2,
           overflow: "hidden",
           boxShadow: 1,
         }}
       >
-        <CurrentSensorViewer />
+        <IMUViewer />
       </Box>
     </MainLayout>
   );

@@ -2,8 +2,8 @@
 
 import { Box, Typography, Button, Stack } from "@mui/material";
 import { useState } from "react";
-import MainLayout from "../components/layout/MainLayout";
-import CostmapViewer from "../components/costmap/CostmapViewer";
+import MainLayout from "../../components/layout/MainLayout";
+import CostmapViewer from "../../components/costmap/CostmapViewer";
 
 export default function CostmapPage() {
   const [showLocal, setShowLocal] = useState(true);
@@ -52,7 +52,11 @@ export default function CostmapPage() {
                 boxShadow: 1,
               }}
             >
-              <CostmapViewer useMock={useMock} showGlobal={false} showLocal={true} />
+              <CostmapViewer
+                useMock={useMock}
+                showGlobal={false}
+                showLocal={true}
+              />
             </Box>
           </Box>
         )}
@@ -72,7 +76,11 @@ export default function CostmapPage() {
                 boxShadow: 1,
               }}
             >
-              <CostmapViewer useMock={useMock} showGlobal={true} showLocal={false} />
+              <CostmapViewer
+                useMock={useMock}
+                showGlobal={true}
+                showLocal={false}
+              />
             </Box>
           </Box>
         )}

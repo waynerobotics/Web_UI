@@ -1,8 +1,8 @@
 "use client";
 
 import { Box, Typography } from "@mui/material";
-import MainLayout    from "../components/layout/MainLayout";
-import SettingsForm from "../components/settings/SettingsForm";
+import MainLayout from "../../components/layout/MainLayout";
+import SettingsForm from "../../components/settings/SettingsForm";
 
 export default function SettingsPage() {
   return (
