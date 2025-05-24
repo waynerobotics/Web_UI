@@ -5,6 +5,8 @@ import MainLayout from "@/components/layout/MainLayout";
 import ConnectionStatus from "@/components/ros/ConnectionStatus";
 import LidarPointCloud from "@/components/lidar/LidarPointCloud";
 import { Box, Button, Stack, Typography } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMap } from "@fortawesome/free-solid-svg-icons";
 
 export default function LidarMapPage() {
   const [useMock, setUseMock] = useState(true);
@@ -15,7 +17,11 @@ export default function LidarMapPage() {
 
       <Box sx={{ p: 2 }}>
         <Stack direction="row" spacing={2} mb={2}>
-          <Typography variant="h6">LIDAR Viewer</Typography>
+        <Typography variant="h4" gutterBottom>
+        <FontAwesomeIcon icon={faMap} style={{ marginRight: 12 }} />
+        Lidar Point Cloud
+        </Typography>
+
           <Button variant="contained" onClick={() => setUseMock((v) => !v)}>
             {useMock ? "Switch to Live" : "Switch to Mock"}
           </Button>

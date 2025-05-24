@@ -39,6 +39,8 @@ import {
   faChartLine,
   faCog,
   faUsers,
+  faCamera,
+  faVideo,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -57,6 +59,7 @@ export default function MainLayout({ children }) {
     { text: "LIDAR Map", icon: faMap, path: "/lidar" },
     { text: "ROS2 Connection", icon: faWifi, path: "/ros-connection" },
     { text: "Data Dashboard", icon: faChartLine, path: "/dashboard" },
+    { text: "Camera", icon: faCamera, path: "/camera" },
     {
       text: "Turtle Control",
       icon: faArrowUpRightFromSquare,
@@ -114,10 +117,16 @@ export default function MainLayout({ children }) {
               </IconButton>
             </Tooltip>
             <Tooltip title="Docs" arrow>
-              <IconButton href="/docs" sx={navButtonStyle}>
-                <MenuBookIcon />
-              </IconButton>
-            </Tooltip>
+            <IconButton
+              href="/Shanti_2025_igvc_report.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={navButtonStyle}
+            >
+              <MenuBookIcon />
+            </IconButton>
+           </Tooltip>
+
             <Tooltip title="Team" arrow>
               <IconButton href="/team" sx={navButtonStyle}>
                 <FontAwesomeIcon icon={faUsers} />
