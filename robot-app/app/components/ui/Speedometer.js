@@ -140,7 +140,7 @@ export default function Speedometer() {
         <Typography
           variant="h5"
           component="div"
-          sx={{ mt: 0, fontWeight: "bold", color: "#2f2f2f" }}
+          sx={{ mt: 0, fontWeight: "bold" }}
         >
           {speed.toFixed(1)} m/s
         </Typography>
