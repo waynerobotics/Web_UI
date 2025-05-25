@@ -106,10 +106,12 @@ export default function MainLayout({ children }) {
             </Typography>
           </Box>
           <Box sx={{ display: "flex", gap: 2 }}>
-            <Tooltip title="Home" arrow>
-              <IconButton href="/" sx={navButtonStyle}>
-                <HomeIcon />
-              </IconButton>
+          <Tooltip title="Home" arrow>
+              <Link href="/" passHref>
+                <IconButton component="a" sx={navButtonStyle}>
+                  <HomeIcon />
+                </IconButton>
+              </Link>
             </Tooltip>
             <Tooltip title="GitHub" arrow>
               <IconButton
