@@ -136,9 +136,9 @@ export default function DataDashboard() {
         ) : showDemo ? (
           <TabPanel value={tabValue} index={0}>
             <Typography variant="body1" sx={{ p: 2 }}>
-              Overview telemetry is shown above (Battery, Speed, Waypoint). More visualizations coming soon.
+              Overview telemetry is shown above (Battery, Speed, Waypoint). More
+              visualizations coming soon.
             </Typography>
-
           </TabPanel>
         ) : (
           <Box
@@ -221,8 +221,9 @@ function SimpleRobotDashboard() {
 
   return (
     <Grid container spacing={2}>
+      {" "}
       {/* Battery Status */}
-      <Grid item xs={6} md={4}>
+      <Grid size={{ xs: 6, md: 4 }}>
         <MetricCard
           title="Battery"
           value={`${metrics.battery}%`}
@@ -235,9 +236,8 @@ function SimpleRobotDashboard() {
           }
         />
       </Grid>
-
       {/* Temperature */}
-      <Grid item xs={6} md={4}>
+      <Grid size={{ xs: 6, md: 4 }}>
         <MetricCard
           title="Temperature"
           value={`${metrics.temperature}°C`}
@@ -250,9 +250,8 @@ function SimpleRobotDashboard() {
           }
         />
       </Grid>
-
       {/* CPU Load */}
-      <Grid item xs={6} md={4}>
+      <Grid size={{ xs: 6, md: 4 }}>
         <MetricCard
           title="CPU Load"
           value={`${metrics.cpuLoad}%`}
@@ -265,9 +264,8 @@ function SimpleRobotDashboard() {
           }
         />
       </Grid>
-
       {/* Memory Usage */}
-      <Grid item xs={6} md={4}>
+      <Grid size={{ xs: 6, md: 4 }}>
         <MetricCard
           title="Memory"
           value={`${metrics.memoryUsage}%`}
@@ -279,28 +277,25 @@ function SimpleRobotDashboard() {
               : "#f44336"
           }
         />
-      </Grid>
-
+      </Grid>{" "}
       {/* Velocity */}
-      <Grid item xs={6} md={4}>
+      <Grid size={{ xs: 6, md: 4 }}>
         <MetricCard
           title="Velocity"
           value={`${metrics.velocity} m/s`}
           color="#2196f3"
         />
       </Grid>
-
       {/* Runtime */}
-      <Grid item xs={6} md={4}>
+      <Grid size={{ xs: 6, md: 4 }}>
         <MetricCard
           title="Runtime"
           value={formatRuntime(metrics.runtime)}
           color="#9c27b0"
         />
       </Grid>
-
       {/* Disk Space */}
-      <Grid item xs={12}>
+      <Grid size={{ xs: 12 }}>
         <Paper sx={{ p: 2, mt: 1 }}>
           <Typography variant="subtitle2" gutterBottom>
             Disk Usage

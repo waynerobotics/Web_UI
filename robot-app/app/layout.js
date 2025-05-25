@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, createContext } from "react";
+import React, { useState, useMemo, createContext, useEffect } from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -22,6 +22,11 @@ const inter = Inter({ subsets: ["latin"] });
 export default function RootLayout({ children }) {
   // State for light/dark mode
   const [mode, setMode] = useState("light");
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Memoized context value
   const colorMode = useMemo(
@@ -54,14 +59,13 @@ export default function RootLayout({ children }) {
       }),
     [mode]
   );
-
   return (
     <html lang="en">
       <body className={inter.className}>
         <ColorModeContext.Provider value={colorMode}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            {children}
+            {isMounted ? children : <div style={{ minHeight: "100vh" }} />}
           </ThemeProvider>
         </ColorModeContext.Provider>
       </body>

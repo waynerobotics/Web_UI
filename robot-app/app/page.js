@@ -1,17 +1,30 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { Box, Grid, Container, Typography } from "@mui/material";
 import MainLayout from "./components/layout/MainLayout";
-import RobotViewer from "./components/robot/RobotViewer";
-import LidarPointCloud from "./components/lidar/LidarPointCloud";
 import RosConnection from "./components/ros/ConnectionStatus";
 import DataDashboard from "./components/dashboard/DataDashboard";
 import BatteryIndicator from "./components/ui/BatteryGauge";
 import Compass from "./components/ui/Compass";
 import Speedometer from "./components/ui/Speedometer";
 import WaypointPanel from "./components/ui/WaypointPanel";
-import CostmapViewer from "./components/costmap/CostmapViewer";
 import Card from "./components/ui/Card";
+
+// Dynamically import Three.js components to prevent SSR issues
+const RobotViewer = dynamic(() => import("./components/robot/RobotViewer"), {
+  ssr: false,
+});
+
+const LidarPointCloud = dynamic(
+  () => import("./components/lidar/LidarPointCloud"),
+  { ssr: false }
+);
+
+const CostmapViewer = dynamic(
+  () => import("./components/costmap/CostmapViewer"),
+  { ssr: false }
+);
 
 export default function Home() {
   return (
@@ -43,7 +56,8 @@ export default function Home() {
             alignItems: "center",
           }}
         >
-          <Grid item xs={12}>
+          {" "}
+          <Grid size={{ xs: 12 }}>
             {" "}
             <Box sx={{ height: "18m", width: "100em" }}>
               <Card title="Robot Data Dashboard" titleVariant="h5">
@@ -63,28 +77,28 @@ export default function Home() {
           }}
         >
           {" "}
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Box sx={{ height: "18em", width: "20em" }}>
               <Card title="Battery">
                 <BatteryIndicator />
               </Card>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Box sx={{ height: "18em", width: "20em" }}>
               <Card title="Heading">
                 <Compass heading={123} />
               </Card>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Box sx={{ height: "18em", width: "20em" }}>
               <Card title="Velocity">
                 <Speedometer />
               </Card>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Box sx={{ height: "18em", width: "20em" }}>
               <Card title="Next Waypoint">
                 <WaypointPanel />
@@ -102,7 +116,7 @@ export default function Home() {
           }}
         >
           {" "}
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Box sx={{ height: "30em", width: "30em" }}>
               <Card title="Robot Visualization">
                 <Box sx={{ width: "100%", height: "100%" }}>
@@ -111,7 +125,7 @@ export default function Home() {
               </Card>
             </Box>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Box sx={{ height: "30em", width: "30em" }}>
               <Card title="LIDAR Point Cloud">
                 <Box
@@ -122,7 +136,7 @@ export default function Home() {
               </Card>
             </Box>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Box sx={{ height: "30em", width: "30em" }}>
               <Card title="Cost Map">
                 <Box

@@ -1,8 +1,13 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { Box, Typography } from "@mui/material";
 import MainLayout from "../../components/layout/MainLayout";
-import IMUViewer from "../../components/imu/IMUViewer";
+
+// Dynamically import IMUViewer to prevent SSR issues
+const IMUViewer = dynamic(() => import("../../components/imu/IMUViewer"), {
+  ssr: false,
+});
 
 export default function IMUPage() {
   return (

@@ -1,9 +1,15 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { Box, Typography, Button, Stack } from "@mui/material";
 import { useState } from "react";
 import MainLayout from "../../components/layout/MainLayout";
-import CostmapViewer from "../../components/costmap/CostmapViewer";
+
+// Dynamically import CostmapViewer to prevent SSR issues
+const CostmapViewer = dynamic(
+  () => import("../../components/costmap/CostmapViewer"),
+  { ssr: false }
+);
 
 export default function CostmapPage() {
   const [showLocal, setShowLocal] = useState(true);

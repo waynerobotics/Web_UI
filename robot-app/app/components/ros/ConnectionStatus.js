@@ -8,9 +8,24 @@ import { Box, Typography, Chip } from "@mui/material";
 export default function ConnectionStatus() {
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState(false);
-
   useEffect(() => {
     let isMounted = true;
+    let intervalId; // Initial check
+    if (ros && ros.isConnected) {
+      setConnected(true);
+      setError(false);
+    }
+
+    // Periodic check every 3 seconds
+    intervalId = setInterval(() => {
+      if (isMounted) {
+        const isConnected = ros && ros.isConnected;
+        setConnected(isConnected);
+        if (!isConnected) {
+          setError(false); // Reset error state if just disconnected
+        }
+      }
+    }, 3000);
 
     const handleConnection = () => {
       if (isMounted) {
@@ -20,31 +35,39 @@ export default function ConnectionStatus() {
     };
 
     const handleClose = () => {
-      if (isMounted) setConnected(false);
+      if (isMounted) {
+        setConnected(false);
+      }
     };
 
     const handleError = (err) => {
-      console.error("ROS connection error:", err);
+      console.log("ROS connection error:", err);
       if (isMounted) {
         setConnected(false);
         setError(true);
       }
     };
-
     try {
-      ros.on("connection", handleConnection);
-      ros.on("close", handleClose);
-      ros.on("error", handleError);
+      if (ros) {
+        ros.on("connection", handleConnection);
+        ros.on("close", handleClose);
+        ros.on("error", handleError);
+      }
     } catch (err) {
       handleError(err);
     }
 
     return () => {
       isMounted = false;
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
       try {
-        ros.off("connection", handleConnection);
-        ros.off("close", handleClose);
-        ros.off("error", handleError);
+        if (ros) {
+          ros.off("connection", handleConnection);
+          ros.off("close", handleClose);
+          ros.off("error", handleError);
+        }
       } catch (cleanupErr) {
         console.warn("ROS cleanup failed:", cleanupErr);
       }

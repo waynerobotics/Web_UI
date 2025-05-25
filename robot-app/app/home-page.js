@@ -35,7 +35,8 @@ export default function Home() {
             alignItems: "center",
           }}
         >
-          <Grid item xs={12}>
+          {" "}
+          <Grid size={{ xs: 12 }}>
             <Box sx={{ height: "20em", width: "100em" }}>
               <Card title="Robot Data Dashboard" titleVariant="h5">
                 <Typography variant="body1">
@@ -55,7 +56,8 @@ export default function Home() {
             alignItems: "center",
           }}
         >
-          <Grid item xs={12} sm={6} md={3}>
+          {" "}
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Box sx={{ height: "20em", width: "20em" }}>
               <Card title="Battery">
                 <Typography variant="body1">
@@ -64,7 +66,7 @@ export default function Home() {
               </Card>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Box sx={{ height: "20em", width: "20em" }}>
               <Card title="Heading">
                 <Typography variant="body1">
@@ -73,7 +75,7 @@ export default function Home() {
               </Card>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Box sx={{ height: "20em", width: "20em" }}>
               <Card title="Velocity">
                 <Typography variant="body1">
@@ -82,7 +84,7 @@ export default function Home() {
               </Card>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Box sx={{ height: "20em", width: "20em" }}>
               <Card title="Next Waypoint">
                 <Typography variant="body1">
@@ -101,7 +103,8 @@ export default function Home() {
             alignItems: "center",
           }}
         >
-          <Grid item xs={12} md={4}>
+          {" "}
+          <Grid size={{ xs: 12, md: 4 }}>
             <Box sx={{ height: "35em", width: "30em" }}>
               <Card title="Robot Visualization">
                 <Typography variant="body1">
@@ -110,7 +113,7 @@ export default function Home() {
               </Card>
             </Box>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Box sx={{ height: "35em", width: "30em" }}>
               <Card title="LIDAR Point Cloud">
                 <Typography variant="body1">
@@ -119,7 +122,7 @@ export default function Home() {
               </Card>
             </Box>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Box sx={{ height: "35em", width: "30em" }}>
               <Card title="Cost Map">
                 <Typography variant="body1">Cost Map Placeholder</Typography>

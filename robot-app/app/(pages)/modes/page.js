@@ -1,9 +1,15 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { Box, Typography, ButtonGroup, Button } from "@mui/material";
 import { useState } from "react";
 import MainLayout from "../../components/layout/MainLayout";
-import ModesViewer from "../../components/modes/ModesViewer";
+
+// Dynamically import ModesViewer to prevent SSR issues
+const ModesViewer = dynamic(
+  () => import("../../components/modes/ModesViewer"),
+  { ssr: false }
+);
 
 export default function ModesPage() {
   const [modeIdx, setModeIdx] = useState(0);

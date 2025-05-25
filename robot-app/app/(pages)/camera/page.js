@@ -1,12 +1,24 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import MainLayout from "@/components/layout/MainLayout";
-import { Box, Typography, Button, CircularProgress, Stack, Alert, Grid } from "@mui/material";
-import PhotoSphereViewer from "photo-sphere-viewer";
-import "photo-sphere-viewer/dist/photo-sphere-viewer.css";
+import {
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+  Stack,
+  Alert,
+  Grid,
+} from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
+
+// Dynamically import PhotoSphereViewer to prevent SSR issues
+const PhotoSphereViewer = dynamic(() => import("photo-sphere-viewer"), {
+  ssr: false,
+});
 
 // Helper for each camera window
 function CameraViewer({ label, streamUrl }) {
@@ -17,35 +29,59 @@ function CameraViewer({ label, streamUrl }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (typeof window === "undefined") return; // Skip on server
+
     let destroyed = false;
     setLoading(true);
     setConnected(false);
     setError("");
 
-    viewerRef.current = new PhotoSphereViewer.Viewer({
-      container: viewerContainer.current,
-      panorama: streamUrl,
-      navbar: ["autorotate", "zoom", "fullscreen"],
-      useXmpData: false,
-      size: { width: "100%", height: 400 },
-    });
+    // Dynamically import the CSS
+    import("photo-sphere-viewer/dist/photo-sphere-viewer.css");
 
-    viewerRef.current.on("ready", () => {
-      if (!destroyed) {
-        setLoading(false);
-        setConnected(true);
-      }
-    });
-    viewerRef.current.on("panorama-load-fail", () => {
-      if (!destroyed) {
-        setLoading(false);
-        setConnected(false);
-        setError("Could not connect to the camera. Please check your connection.");
-        if (viewerContainer.current) {
-          viewerContainer.current.innerHTML = "";
+    // Wait for PhotoSphereViewer to be available
+    const initViewer = async () => {
+      try {
+        const PSV = await import("photo-sphere-viewer");
+
+        if (viewerContainer.current && !destroyed) {
+          viewerRef.current = new PSV.Viewer({
+            container: viewerContainer.current,
+            panorama: streamUrl,
+            navbar: ["autorotate", "zoom", "fullscreen"],
+            useXmpData: false,
+            size: { width: "100%", height: 400 },
+          });
+
+          viewerRef.current.on("ready", () => {
+            if (!destroyed) {
+              setLoading(false);
+              setConnected(true);
+            }
+          });
+
+          viewerRef.current.on("panorama-load-fail", () => {
+            if (!destroyed) {
+              setLoading(false);
+              setConnected(false);
+              setError(
+                "Could not connect to the camera. Please check your connection."
+              );
+              if (viewerContainer.current) {
+                viewerContainer.current.innerHTML = "";
+              }
+            }
+          });
+        }
+      } catch (err) {
+        if (!destroyed) {
+          setLoading(false);
+          setError("Failed to load camera viewer");
         }
       }
-    });
+    };
+
+    initViewer();
 
     return () => {
       destroyed = true;
@@ -59,7 +95,9 @@ function CameraViewer({ label, streamUrl }) {
       const dataUrl = viewerRef.current.canvas.toDataURL("image/jpeg");
       const a = document.createElement("a");
       a.href = dataUrl;
-      a.download = `${label.toLowerCase().replace(" ", "_")}_snapshot_${Date.now()}.jpg`;
+      a.download = `${label
+        .toLowerCase()
+        .replace(" ", "_")}_snapshot_${Date.now()}.jpg`;
       a.click();
     }
   };
@@ -80,16 +118,26 @@ function CameraViewer({ label, streamUrl }) {
         minHeight: 320,
       }}
     >
-      <Typography variant="h6" sx={{ mb: 1 }}>{label}</Typography>
+      <Typography variant="h6" sx={{ mb: 1 }}>
+        {label}
+      </Typography>
       <Stack direction="row" alignItems="center" gap={2} mb={2}>
         {loading && <CircularProgress size={22} />}
         {!loading && connected && (
-          <Alert severity="success" sx={{ height: 34, py: 0 }}>Connected</Alert>
+          <Alert severity="success" sx={{ height: 34, py: 0 }}>
+            Connected
+          </Alert>
         )}
         {!loading && error && (
-          <Alert severity="warning" sx={{ height: 34, py: 0 }}>{error}</Alert>
+          <Alert severity="warning" sx={{ height: 34, py: 0 }}>
+            {error}
+          </Alert>
         )}
-        <Button variant="outlined" onClick={handleSnapshot} disabled={!connected}>
+        <Button
+          variant="outlined"
+          onClick={handleSnapshot}
+          disabled={!connected}
+        >
           Snapshot
         </Button>
         <Button variant="outlined" onClick={() => window.location.reload()}>
@@ -138,15 +186,14 @@ export default function DualCameraPage() {
     <MainLayout>
       <Box sx={{ p: { xs: 1, md: 4 } }}>
         <Typography variant="h4" gutterBottom>
-        <FontAwesomeIcon icon={faCamera} style={{ marginRight: 12 }} />
-        Camera Views 
-        </Typography>
-
+          <FontAwesomeIcon icon={faCamera} style={{ marginRight: 12 }} />
+          Camera Views
+        </Typography>{" "}
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <CameraViewer label="Front View" streamUrl={frontCameraUrl} />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <CameraViewer label="Back View" streamUrl={backCameraUrl} />
           </Grid>
         </Grid>

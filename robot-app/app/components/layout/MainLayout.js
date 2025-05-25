@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   AppBar,
@@ -51,6 +51,11 @@ const logoPath = "/WR.svg";
 export default function MainLayout({ children }) {
   const theme = useTheme();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const toggleDrawer = () => setDrawerOpen(!drawerOpen);
 
@@ -117,15 +122,15 @@ export default function MainLayout({ children }) {
               </IconButton>
             </Tooltip>
             <Tooltip title="Docs" arrow>
-            <IconButton
-              href="/Shanti_2025_igvc_report.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={navButtonStyle}
-            >
-              <MenuBookIcon />
-            </IconButton>
-           </Tooltip>
+              <IconButton
+                href="/Shanti_2025_igvc_report.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={navButtonStyle}
+              >
+                <MenuBookIcon />
+              </IconButton>
+            </Tooltip>
 
             <Tooltip title="Team" arrow>
               <IconButton href="/team" sx={navButtonStyle}>
