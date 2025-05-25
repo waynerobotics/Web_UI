@@ -74,7 +74,6 @@ export default function MainLayout({ children }) {
     localStorage.setItem("drawerOpen", JSON.stringify(newDrawerState));
   };
   const menuItems = [
-    { text: "Home", icon: faHome, path: "/" },
     { text: "Robot View", icon: faRobot, path: "/robot-view" },
     { text: "LIDAR Map", icon: faMap, path: "/lidar" },
     { text: "ROS2 Connection", icon: faWifi, path: "/ros-connection" },
@@ -120,11 +119,26 @@ export default function MainLayout({ children }) {
             <Typography variant="h6" noWrap>
               WayneRobotics
             </Typography>
-          </Box>
+          </Box>{" "}
           <Box sx={{ display: "flex", gap: 2 }}>
-          <Tooltip title="Home" arrow>
+            <Tooltip title="Home" arrow>
               <Link href="/" passHref>
-                <IconButton component="a" sx={navButtonStyle}>
+                <IconButton
+                  component="a"
+                  sx={{
+                    ...navButtonStyle,
+                    backgroundColor:
+                      pathname === "/"
+                        ? "rgba(255,255,255,0.2)"
+                        : "transparent",
+                    "&:hover": {
+                      backgroundColor:
+                        pathname === "/"
+                          ? "rgba(255,255,255,0.3)"
+                          : "rgba(255,255,255,0.1)",
+                    },
+                  }}
+                >
                   <HomeIcon />
                 </IconButton>
               </Link>
