@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   AppBar,
   Box,
@@ -33,6 +34,7 @@ import {
   faLocationArrow,
   faSliders,
   faArrowUpRightFromSquare,
+  faHome,
   faRobot,
   faMap,
   faWifi,
@@ -50,16 +52,29 @@ const logoPath = "/WR.svg";
 
 export default function MainLayout({ children }) {
   const theme = useTheme();
+  const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
+
+    // Load drawer state from localStorage
+    const savedDrawerState = localStorage.getItem("drawerOpen");
+    if (savedDrawerState !== null) {
+      setDrawerOpen(JSON.parse(savedDrawerState));
+    }
   }, []);
 
-  const toggleDrawer = () => setDrawerOpen(!drawerOpen);
+  const toggleDrawer = () => {
+    const newDrawerState = !drawerOpen;
+    setDrawerOpen(newDrawerState);
 
+    // Save drawer state to localStorage
+    localStorage.setItem("drawerOpen", JSON.stringify(newDrawerState));
+  };
   const menuItems = [
+    { text: "Home", icon: faHome, path: "/" },
     { text: "Robot View", icon: faRobot, path: "/robot-view" },
     { text: "LIDAR Map", icon: faMap, path: "/lidar" },
     { text: "ROS2 Connection", icon: faWifi, path: "/ros-connection" },
@@ -80,7 +95,8 @@ export default function MainLayout({ children }) {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline /> {/* AppBar */}
+      <CssBaseline />
+      {/* AppBar */}
       <AppBar
         position="fixed"
         sx={{
@@ -188,6 +204,7 @@ export default function MainLayout({ children }) {
               arrow
             >
               <ListItem disablePadding sx={{ display: "block" }}>
+                {" "}
                 <Link href={item.path} style={{ textDecoration: "none" }}>
                   {" "}
                   <ListItemButton
@@ -195,6 +212,12 @@ export default function MainLayout({ children }) {
                       minHeight: 48,
                       justifyContent: drawerOpen ? "initial" : "center",
                       px: 2.5,
+                      backgroundColor:
+                        pathname === item.path
+                          ? theme.palette.mode === "light"
+                            ? "rgba(9, 63, 57, 0.15)"
+                            : "rgba(255, 204, 51, 0.15)"
+                          : "transparent",
                       "&:hover": {
                         backgroundColor:
                           theme.palette.mode === "light"
@@ -210,21 +233,32 @@ export default function MainLayout({ children }) {
                         mr: drawerOpen ? 2 : "auto",
                         justifyContent: "center",
                         color:
-                          theme.palette.mode === "light"
+                          pathname === item.path
+                            ? theme.palette.mode === "light"
+                              ? "#093F39"
+                              : "#FFCC33"
+                            : theme.palette.mode === "light"
                             ? "#093F39"
                             : "#FFFFFF", // Green in light mode, white in dark mode
+                        fontWeight: pathname === item.path ? "bold" : "normal",
                       }}
                     >
                       <FontAwesomeIcon icon={item.icon} size="lg" />
-                    </ListItemIcon>
+                    </ListItemIcon>{" "}
                     {drawerOpen && (
                       <ListItemText
                         primary={item.text}
                         sx={{
                           color:
-                            theme.palette.mode === "light"
+                            pathname === item.path
+                              ? theme.palette.mode === "light"
+                                ? "#093F39"
+                                : "#FFCC33"
+                              : theme.palette.mode === "light"
                               ? "#000000"
                               : "#FFFFFF",
+                          fontWeight:
+                            pathname === item.path ? "bold" : "normal",
                         }}
                       />
                     )}
